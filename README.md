@@ -1,2 +1,2 @@
 # JavaScript Template
-Template to create a new JavaScript project.
+Project to consume a REST API.
