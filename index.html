@@ -1,22 +1,47 @@
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Consume REST API</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link href="https://fonts.googleapis.com/css?family=Dosis:400,700" rel="stylesheet" />
-    <link href="css/style.css" rel="stylesheet" />
-  </head>
+  <title>Consume REST API</title>
 
-  <body>
-    <div id="root">
+  <link href="https://fonts.googleapis.com/css?family=Dosis:400,700" rel="stylesheet" />
+  <link href="css/style.css" rel="stylesheet" />
+</head>
 
+<body>
+  <form>
+    <div class="content">
+      <div class="form">
+        <div>
+          <label>User:</label>
+          <input type="text" id="repo-user" value="jmgorduez" required/>
+        </div>
+        <div>
+          <label>Repo name:</label>
+          <input type="text" id="repo-name" value="" />
+        </div>
+        <div>
+            <label>Created date:</label>
+            <input type="date" id="repo-created-date">
+          </div>
+        <div>
+          <label htmlFor="search-btn"></label>
+          <button id="search-btn" type="button">Search</button>
+        </div>
+      </div>
+      <div id="root">
+
+      </div>
     </div>
-  </body>
+  </form>
+</body>
+
 </html>
 
-    <script src="build/app.bundle.js"></script>
+<script src="build/app.bundle.js"></script>
 
-  </body>
+</body>
+
 </html>

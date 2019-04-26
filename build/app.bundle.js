@@ -97,30 +97,66 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./user-interface-manager.js */ "./js/user-interface-manager.js");
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./constants */ "./js/constants.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
 
 
-var request = new XMLHttpRequest();
+
 var root = document.getElementById(_constants__WEBPACK_IMPORTED_MODULE_1__["ROOT_ELEMENT"]);
-request.open(_constants__WEBPACK_IMPORTED_MODULE_1__["GET"], _constants__WEBPACK_IMPORTED_MODULE_1__["API_URL"], true);
+var searchBtn = document.getElementById(_constants__WEBPACK_IMPORTED_MODULE_1__["SEARCH_BTN"]);
 
-request.onload = function () {
-  if (isReceivedRequest) {
-    getData(request).map(function (repo) {
-      return Object(_user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["default"])(repo);
-    }).forEach(function (htmlElement) {
-      root.appendChild(htmlElement);
-    });
-  }
+window.onload = function () {
+  var user = Object(_user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["getRepoUserValue"])();
+  fetch(Object(_constants__WEBPACK_IMPORTED_MODULE_1__["getAPI_URL"])(user)).then(getRepos)["catch"](showError);
 };
 
-request.send();
+searchBtn.onclick = function () {
+  var user = Object(_user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["getRepoUserValue"])();
 
-function isReceivedRequest() {
-  return request.status >= 200 && request.status < 400;
+  if (user.length === 0) {
+    alert('User is required');
+    return;
+  }
+
+  fetch(Object(_constants__WEBPACK_IMPORTED_MODULE_1__["getAPI_URL"])(user)).then(getRepos)["catch"](showError);
+};
+
+function getRepos(response) {
+  cleanRootElement();
+
+  if (response.ok) {
+    response.text().then(readGitRepos);
+  } else {
+    showError("".concat(_constants__WEBPACK_IMPORTED_MODULE_1__["RESPONSE_STATUS_MESSAGE"], " ").concat(response.status));
+  }
 }
 
-function getData(request) {
-  return JSON.parse(request.response);
+function readGitRepos(responseText) {
+  JSON.parse(responseText).filter(filterRepo).sort(sortRepos).map(function (repo) {
+    return Object(_user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["createRowElement"])(repo);
+  }).forEach(function (htmlElement) {
+    root.appendChild(htmlElement);
+  });
+}
+
+function cleanRootElement() {
+  root.innerHTML = _constants__WEBPACK_IMPORTED_MODULE_1__["EMPTY_STRING"];
+}
+
+function filterRepo(repo) {
+  return (Object(_user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["getRepoNameValue"])().length === 0 || repo.full_name.search(Object(_user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["getRepoNameValue"])().trim()) !== -1) && getCreatedDateField(repo).isSameOrBefore(Object(_user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["getRepoCreatedDateValue"])(), _constants__WEBPACK_IMPORTED_MODULE_1__["DAY"]);
+}
+
+function getCreatedDateField(repo) {
+  return moment__WEBPACK_IMPORTED_MODULE_2___default()(repo.created_at);
+}
+
+function sortRepos(repo1, repo2) {
+  return repo1.full_name.localeCompare(repo2.full_name);
+}
+
+function showError(error) {
+  console.log(error);
 }
 
 /***/ }),
@@ -129,12 +165,13 @@ function getData(request) {
 /*!*************************!*\
   !*** ./js/constants.js ***!
   \*************************/
-/*! exports provided: DATE_TIME_FORMAT, CLASS_ATTRIBUTE, DIV, H1, IMG, P, REPO_ICON_CLASS, REPO_TITLE_STYLE, REPO_URL_STYLE, REPO_CREATED_AT, CREATED_AT_MESSAGE, API_URL, GET, ROOT_ELEMENT */
+/*! exports provided: DATE_TIME_FORMAT, DATE_FORMAT, CLASS_ATTRIBUTE, DIV, H1, IMG, P, REPO_ICON_CLASS, REPO_TITLE_STYLE, REPO_URL_STYLE, REPO_CREATED_AT, CREATED_AT_MESSAGE, RESPONSE_STATUS_MESSAGE, ROOT_ELEMENT, SEARCH_BTN, EMPTY_STRING, DAY, getAPI_URL */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DATE_TIME_FORMAT", function() { return DATE_TIME_FORMAT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DATE_FORMAT", function() { return DATE_FORMAT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CLASS_ATTRIBUTE", function() { return CLASS_ATTRIBUTE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DIV", function() { return DIV; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "H1", function() { return H1; });
@@ -145,10 +182,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "REPO_URL_STYLE", function() { return REPO_URL_STYLE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "REPO_CREATED_AT", function() { return REPO_CREATED_AT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATED_AT_MESSAGE", function() { return CREATED_AT_MESSAGE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "API_URL", function() { return API_URL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GET", function() { return GET; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RESPONSE_STATUS_MESSAGE", function() { return RESPONSE_STATUS_MESSAGE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROOT_ELEMENT", function() { return ROOT_ELEMENT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SEARCH_BTN", function() { return SEARCH_BTN; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EMPTY_STRING", function() { return EMPTY_STRING; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DAY", function() { return DAY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAPI_URL", function() { return getAPI_URL; });
 var DATE_TIME_FORMAT = 'MMMM Do YYYY, h:mm:ss a';
+var DATE_FORMAT = 'MMMM Do YYYY';
 var CLASS_ATTRIBUTE = 'class';
 var DIV = 'div';
 var H1 = 'h1';
@@ -159,9 +200,14 @@ var REPO_TITLE_STYLE = 'repo-title';
 var REPO_URL_STYLE = 'repo-url';
 var REPO_CREATED_AT = 'repo-created-at';
 var CREATED_AT_MESSAGE = 'Created at';
-var API_URL = 'https://api.github.com/users/jmgorduez/repos';
-var GET = 'GET';
+var RESPONSE_STATUS_MESSAGE = 'Response status';
 var ROOT_ELEMENT = 'root';
+var SEARCH_BTN = 'search-btn';
+var EMPTY_STRING = '';
+var DAY = 'day';
+function getAPI_URL(user) {
+  return "https://api.github.com/users/".concat(user, "/repos");
+}
 
 /***/ }),
 
@@ -169,15 +215,18 @@ var ROOT_ELEMENT = 'root';
 /*!**************************************!*\
   !*** ./js/user-interface-manager.js ***!
   \**************************************/
-/*! exports provided: default */
+/*! exports provided: createRowElement, getRepoNameValue, getRepoUserValue, getRepoCreatedDateValue */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createRowElement", function() { return createRowElement; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRepoNameValue", function() { return getRepoNameValue; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRepoUserValue", function() { return getRepoUserValue; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRepoCreatedDateValue", function() { return getRepoCreatedDateValue; });
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./constants */ "./js/constants.js");
-
 
 
 function createRowElement(repo) {
@@ -229,7 +278,15 @@ function createRepoCreationDateComponent(repo) {
   return div;
 }
 
-/* harmony default export */ __webpack_exports__["default"] = (createRowElement);
+function getRepoNameValue() {
+  return document.getElementById("repo-name").value;
+}
+function getRepoUserValue() {
+  return document.getElementById("repo-user").value;
+}
+function getRepoCreatedDateValue() {
+  return moment__WEBPACK_IMPORTED_MODULE_0___default()(document.getElementById("repo-created-date").value);
+}
 
 /***/ }),
 

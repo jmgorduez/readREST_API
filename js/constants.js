@@ -1,4 +1,5 @@
 export const DATE_TIME_FORMAT = 'MMMM Do YYYY, h:mm:ss a'
+export const DATE_FORMAT = 'MMMM Do YYYY'
 export const CLASS_ATTRIBUTE = 'class'
 export const DIV = 'div'
 export const H1 = 'h1'
@@ -9,6 +10,11 @@ export const REPO_TITLE_STYLE = 'repo-title'
 export const REPO_URL_STYLE = 'repo-url'
 export const REPO_CREATED_AT = 'repo-created-at'
 export const CREATED_AT_MESSAGE = 'Created at'
-export const API_URL = 'https://api.github.com/users/jmgorduez/repos'
-export const GET = 'GET'
+export const RESPONSE_STATUS_MESSAGE = 'Response status'
 export const ROOT_ELEMENT = 'root'
+export const SEARCH_BTN = 'search-btn'
+export const EMPTY_STRING = ''
+export const DAY = 'day'
+export function getAPI_URL(user) {
+    return `https://api.github.com/users/${user}/repos`
+}
