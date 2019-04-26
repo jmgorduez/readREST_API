@@ -97,8 +97,7 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./user-interface-manager.js */ "./js/user-interface-manager.js");
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./constants */ "./js/constants.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _logic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./logic */ "./js/logic.js");
 
 
 
@@ -125,34 +124,22 @@ function getRepos(response) {
   cleanRootElement();
 
   if (response.ok) {
-    response.text().then(readGitRepos);
+    response.text().then(readRepos);
   } else {
     showError("".concat(_constants__WEBPACK_IMPORTED_MODULE_1__["RESPONSE_STATUS_MESSAGE"], " ").concat(response.status));
   }
 }
 
-function readGitRepos(responseText) {
-  JSON.parse(responseText).filter(filterRepo).sort(sortRepos).map(function (repo) {
-    return Object(_user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["createRowElement"])(repo);
-  }).forEach(function (htmlElement) {
-    root.appendChild(htmlElement);
-  });
+function readRepos(responseText) {
+  Object(_logic__WEBPACK_IMPORTED_MODULE_2__["default"])(responseText, Object(_user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["getRepoNameValue"])(), Object(_user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["getRepoCreatedDateValue"])(), _user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["createRowElement"], appendChild);
+}
+
+function appendChild(element) {
+  root.appendChild(element);
 }
 
 function cleanRootElement() {
   root.innerHTML = _constants__WEBPACK_IMPORTED_MODULE_1__["EMPTY_STRING"];
-}
-
-function filterRepo(repo) {
-  return (Object(_user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["getRepoNameValue"])().length === 0 || repo.full_name.search(Object(_user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["getRepoNameValue"])().trim()) !== -1) && getCreatedDateField(repo).isSameOrBefore(Object(_user_interface_manager_js__WEBPACK_IMPORTED_MODULE_0__["getRepoCreatedDateValue"])(), _constants__WEBPACK_IMPORTED_MODULE_1__["DAY"]);
-}
-
-function getCreatedDateField(repo) {
-  return moment__WEBPACK_IMPORTED_MODULE_2___default()(repo.created_at);
-}
-
-function sortRepos(repo1, repo2) {
-  return repo1.full_name.localeCompare(repo2.full_name);
 }
 
 function showError(error) {
@@ -208,6 +195,43 @@ var DAY = 'day';
 function getAPI_URL(user) {
   return "https://api.github.com/users/".concat(user, "/repos");
 }
+
+/***/ }),
+
+/***/ "./js/logic.js":
+/*!*********************!*\
+  !*** ./js/logic.js ***!
+  \*********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants */ "./js/constants.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+function processRepos(responseText, repoNameFilter, repoCreatedDate, mapToHTLMElement, appendHTMLElementChild) {
+  JSON.parse(responseText).filter(function (repo) {
+    return filterRepo(repo, repoNameFilter, repoCreatedDate);
+  }).sort(sortRepos).map(function (repo) {
+    return mapToHTLMElement(repo);
+  }).forEach(function (htmlElement) {
+    appendHTMLElementChild(htmlElement);
+  });
+}
+
+function filterRepo(repo, repoNameFilter, repoCreatedDate) {
+  return (repoNameFilter.length === 0 || repo.full_name.search(repoNameFilter.trim()) !== -1) && moment__WEBPACK_IMPORTED_MODULE_1___default()(repo.created_at).isSameOrBefore(repoCreatedDate, _constants__WEBPACK_IMPORTED_MODULE_0__["DAY"]);
+}
+
+function sortRepos(repo1, repo2) {
+  return repo1.full_name.localeCompare(repo2.full_name);
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (processRepos);
 
 /***/ }),
 
