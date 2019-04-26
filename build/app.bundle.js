@@ -216,11 +216,7 @@ __webpack_require__.r(__webpack_exports__);
 function processRepos(responseText, repoNameFilter, repoCreatedDate, mapToHTLMElement, appendHTMLElementChild) {
   JSON.parse(responseText).filter(function (repo) {
     return filterRepo(repo, repoNameFilter, repoCreatedDate);
-  }).sort(sortRepos).map(function (repo) {
-    return mapToHTLMElement(repo);
-  }).forEach(function (htmlElement) {
-    appendHTMLElementChild(htmlElement);
-  });
+  }).sort(sortRepos).map(mapToHTLMElement).forEach(appendHTMLElementChild);
 }
 
 function filterRepo(repo, repoNameFilter, repoCreatedDate) {

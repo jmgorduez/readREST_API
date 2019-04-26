@@ -6,10 +6,8 @@ function processRepos(responseText, repoNameFilter, repoCreatedDate,
     JSON.parse(responseText)
         .filter(repo => filterRepo(repo, repoNameFilter, repoCreatedDate))
         .sort(sortRepos)
-        .map(repo => mapToHTLMElement(repo))
-        .forEach(htmlElement => {
-            appendHTMLElementChild(htmlElement);
-        });
+        .map(mapToHTLMElement)
+        .forEach(appendHTMLElementChild);
 }
 
 function filterRepo(repo, repoNameFilter, repoCreatedDate) {
